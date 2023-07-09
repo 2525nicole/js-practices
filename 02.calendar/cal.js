@@ -13,7 +13,7 @@ const day_of_week = "日 月 火 水 木 金 土";
 console.log(year_and_month.padStart(13));
 console.log(day_of_week);
 
-for (let date = first_date; date < last_date; date = date.add(1, "days")) {
+for (let date = first_date; date < last_date; date = date.add(1, "day")) {
   let blank_number;
   if (date === first_date) {
     blank_number = Number(date.format("d")) * 3 + 2;
