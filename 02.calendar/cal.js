@@ -25,3 +25,4 @@ for (let date = first_date; date < last_date; date = date.add(1, "days")) {
     process.stdout.write("\n");
   }
 }
+process.stdout.write("\n");
