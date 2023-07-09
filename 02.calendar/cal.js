@@ -15,13 +15,13 @@ console.log(day_of_week);
 
 for (let date = first_date; date < last_date; date = date.add(1, "days")) {
   let blank_number;
-  if (date == first_date) {
+  if (date === first_date) {
     blank_number = Number(date.format("d")) * 3 + 2;
   } else {
     blank_number = 2;
   }
   process.stdout.write(String(date.date()).padStart(blank_number) + " ");
-  if (date.format("d") == 6) {
+  if (date.format("d") === "6") {
     process.stdout.write("\n");
   }
 }
