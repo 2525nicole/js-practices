@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 
 const argv = minimist(process.argv.slice(2));
 const baseDate = dayjs()
-  .year(argv["y"] == null ? dayjs().format("YYYY") : argv["y"])
-  .month(argv["m"] == null ? dayjs().format("M") - 1 : Number(argv["m"]) - 1);
+  .year(argv.y == null ? dayjs().format("YYYY") : argv.y)
+  .month(argv.m == null ? dayjs().format("M") - 1 : Number(argv.m) - 1);
 const firstDate = baseDate.startOf("month");
 const lastDate = baseDate.endOf("month");
 const yearAndMonth = baseDate.format("M月 YYYY");
