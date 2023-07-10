@@ -9,18 +9,19 @@ const argv = minimist(process.argv.slice(2));
 let baseDate = dayjs();
 if (argv.y != null) baseDate = baseDate.set("year", argv.y);
 if (argv.m != null) baseDate = baseDate.set("month", argv.m - 1);
-const firstDate = baseDate.startOf("month");
-const lastDate = baseDate.endOf("month");
-const yearMonthDisplayPosition = 13;
-const yearAndMonth = baseDate.format("MMM YYYY");
-const dayOfWeek = "日 月 火 水 木 金 土";
+
 let calcFirstdayDisplayPosition = (date) => {
   return date.get("d") * 3 + 2;
 };
 
+const yearAndMonth = baseDate.format("MMM YYYY");
+const yearMonthDisplayPosition = 13;
+const dayOfWeek = "日 月 火 水 木 金 土";
 console.log(yearAndMonth.padStart(yearMonthDisplayPosition));
 console.log(dayOfWeek);
 
+const firstDate = baseDate.startOf("month");
+const lastDate = baseDate.endOf("month");
 for (
   let date = firstDate;
   date.isSameOrBefore(lastDate);
