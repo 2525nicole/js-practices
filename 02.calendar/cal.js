@@ -7,8 +7,8 @@ dayjs.extend(isSameOrBefore);
 
 const argv = minimist(process.argv.slice(2));
 let baseDate = dayjs();
-if (argv.y != null) baseDate = baseDate.set("year", argv.y);
-if (argv.m != null) baseDate = baseDate.set("month", argv.m - 1);
+if (argv.y) baseDate = baseDate.set("year", argv.y);
+if (argv.m) baseDate = baseDate.set("month", argv.m - 1);
 
 let calcFirstdayDisplayPosition = (date) => {
   return date.get("d") * 3 + 2;
