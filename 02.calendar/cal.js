@@ -10,7 +10,6 @@ let baseDate = dayjs();
 if (argv.y) baseDate = baseDate.set("year", argv.y);
 if (argv.m) baseDate = baseDate.set("month", argv.m - 1);
 
-const calcFirstdayDisplayPosition = (date) => date.day() * 3 + 2;
 const yearAndMonth = baseDate.format("MMM YYYY");
 const yearMonthDisplayPosition = 13;
 const dayOfWeek = "日 月 火 水 木 金 土";
@@ -19,6 +18,7 @@ console.log(dayOfWeek);
 
 const firstDate = baseDate.startOf("month");
 const lastDate = baseDate.endOf("month");
+const calcFirstdayDisplayPosition = (date) => date.day() * 3 + 2;
 for (
   let date = firstDate;
   date.isSameOrBefore(lastDate);
