@@ -18,7 +18,7 @@ console.log(dayOfWeek);
 
 const firstDate = baseDate.startOf("month");
 const lastDate = baseDate.endOf("month");
-const calcFirstdayDisplayPosition = (date) => date.day() * 3 + 2;
+const calcFirstDayDisplayPosition = (date) => date.day() * 3 + 2;
 for (
   let date = firstDate;
   date.isSameOrBefore(lastDate);
@@ -26,7 +26,7 @@ for (
 ) {
   if (date === firstDate) {
     process.stdout.write(
-      String(date.date()).padStart(calcFirstdayDisplayPosition(date)) + " "
+      String(date.date()).padStart(calcFirstDayDisplayPosition(date)) + " "
     );
   } else {
     const numberOfDigit = 2;
