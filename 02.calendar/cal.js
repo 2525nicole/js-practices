@@ -11,27 +11,21 @@ if (argv.y) baseDate = baseDate.set("year", argv.y);
 if (argv.m) baseDate = baseDate.set("month", argv.m - 1);
 
 const yearAndMonth = baseDate.format("MMM YYYY");
-const yearMonthDisplayPosition = 13;
 const dayOfWeek = "日 月 火 水 木 金 土";
-console.log(yearAndMonth.padStart(yearMonthDisplayPosition));
+console.log(yearAndMonth.padStart(13));
 console.log(dayOfWeek);
 
 const firstDate = baseDate.startOf("month");
 const lastDate = baseDate.endOf("month");
-const calcFirstDayDisplayPosition = (date) => date.day() * 3 + 2;
+
+process.stdout.write(" ".padStart(firstDate.day() * 3));
+
 for (
   let date = firstDate;
   date.isSameOrBefore(lastDate);
   date = date.add(1, "day")
 ) {
-  if (date === firstDate) {
-    process.stdout.write(
-      String(date.date()).padStart(calcFirstDayDisplayPosition(date)) + " "
-    );
-  } else {
-    const numberOfDigit = 2;
-    process.stdout.write(String(date.date()).padStart(numberOfDigit) + " ");
-  }
+  process.stdout.write(String(date.date()).padStart(2) + " ");
   if (date.get("d") === 6 || date.isSame(lastDate, "day")) {
     process.stdout.write("\n");
   }
