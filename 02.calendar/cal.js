@@ -26,7 +26,7 @@ for (
   date = date.add(1, "day")
 ) {
   process.stdout.write(String(date.date()).padStart(2) + " ");
-  if (date.get("d") === 6 || date.isSame(lastDate, "day")) {
+  if (date.day() === 6 || date.isSame(lastDate, "day")) {
     process.stdout.write("\n");
   }
 }
