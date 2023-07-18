@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FJORD BOOT CAMPトップページのHTML出力</title>
+  </head>
+  <body>
+    <script>
+      async function outputHTML(url) {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+          } else {
+            const html = await response.text();
+            console.log(html);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      outputHTML(`https://bootcamp.fjord.jp/`);
+    </script>
+  </body>
+</html>
