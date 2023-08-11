@@ -9,7 +9,7 @@ class MemoApp {
 
   exec() {
     try {
-      const memo_processing = new MemoProcessing(this.destinationFile);
+      const memo_processing = new MemoProcessing(this.destinationFile, options);
       const validOptionsCount = 2;
 
       if (Object.keys(options).length > validOptionsCount) {

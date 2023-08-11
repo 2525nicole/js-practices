@@ -2,14 +2,13 @@ import * as readline from "node:readline/promises";
 import crypto from "node:crypto";
 import enquirer from "enquirer";
 const { prompt } = enquirer;
-import minimist from "minimist";
-const options = minimist(process.argv.slice(2));
 import { FileOperation } from "./file_operation.js";
 import { QuestionsBuilder } from "./questions_builder.js";
 
 export class MemoProcessing {
-  constructor(destinationFile) {
+  constructor(destinationFile, options) {
     this.destinationFile = destinationFile;
+    this.options = options;
   }
 
   async addNewMemo() {
@@ -48,7 +47,9 @@ export class MemoProcessing {
 
   async displayFirsLine() {
     try {
-      const firstLines = await this.#generateProcessingMemoElements();
+      const firstLines = await this.#generateProcessingMemoElements(
+        this.options
+      );
       for (const value of firstLines) {
         console.log(value);
       }
@@ -59,22 +60,26 @@ export class MemoProcessing {
 
   async displayOrDeleteMemos() {
     try {
-      const processingMemoElements =
-        await this.#generateProcessingMemoElements();
-      let questions = new QuestionsBuilder(processingMemoElements, options);
+      const processingMemoElements = await this.#generateProcessingMemoElements(
+        this.options
+      );
+      let questions = new QuestionsBuilder(
+        processingMemoElements,
+        this.options
+      );
       questions = await questions.buildQuestions();
       const answer = await prompt(questions);
-      if (options.r) {
+      if (this.options.r) {
         console.log(answer.memo);
-      } else if (options.d) {
-        this.deleteMemo(answer.memo);
+      } else if (this.options.d) {
+        this.#deleteMemo(answer.memo);
       }
     } catch (error) {
       console.log(error);
     }
   }
 
-  async #generateProcessingMemoElements() {
+  async #generateProcessingMemoElements(options) {
     try {
       const processingMemoElements = [];
       const allMemos = await this.#readAllMemos();
@@ -105,7 +110,7 @@ export class MemoProcessing {
     }
   }
 
-  async deleteMemo(deleteTarget) {
+  async #deleteMemo(deleteTarget) {
     const file = new FileOperation(this.destinationFile);
     try {
       const allMemos = await this.#readAllMemos();
