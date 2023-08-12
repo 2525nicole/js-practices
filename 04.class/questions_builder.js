@@ -6,6 +6,7 @@ export class QuestionsBuilder {
 
   async buildQuestions() {
     try {
+      const options = this.options;
       const message = await this.#determineMessage(this.options);
       const questions = [
         {
@@ -14,9 +15,9 @@ export class QuestionsBuilder {
           message: message,
           choices: this.memoElement,
           footer() {
-            if (this.options.r) {
+            if (options.r) {
               return "\n" + this.focused.value;
-            } else if (this.options.d) {
+            } else if (options.d) {
               return "\n" + this.focused.name;
             }
           },
