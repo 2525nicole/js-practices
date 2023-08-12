@@ -1,5 +1,5 @@
 import * as fs from "node:fs/promises";
-import { access, constants } from "node:fs";
+import { access, constants } from "node:fs/promises";
 
 export class FileOperation {
   constructor(destinationFile) {
@@ -11,16 +11,17 @@ export class FileOperation {
   }
 
   async checkExistence() {
-    access(this.destinationFile, constants.F_OK, (error) => {
-      if (error) {
-        this.writeTarget = '{ "memos": [] }';
-        this.write();
-      }
-    });
+    try {
+      await access(this.destinationFile, constants.F_OK);
+    } catch (error) {
+      this._writeTarget = { memos: [] };
+      await this.write();
+    }
   }
 
   async read() {
     try {
+      await this.checkExistence();
       let content = await fs.readFile(this.destinationFile, "utf8");
       content = JSON.parse(content);
       return content;
@@ -29,10 +30,10 @@ export class FileOperation {
     }
   }
 
-  write() {
+  async write() {
     try {
       this._writeTarget = JSON.stringify(this._writeTarget);
-      fs.writeFile(this.destinationFile, this._writeTarget, "utf8");
+      await fs.writeFile(this.destinationFile, this._writeTarget, "utf8");
     } catch (error) {
       console.log(error);
     }

@@ -14,7 +14,6 @@ export class MemoProcessing {
   async addNewMemo() {
     try {
       const file = new FileOperation(this.destinationFile);
-      file.checkExistence();
 
       let lines = [];
       const newMemoContent = [];
