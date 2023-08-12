@@ -49,6 +49,10 @@ export class MemoProcessing {
       const firstLines = await this.#generateProcessingMemoElements(
         this.options
       );
+      if (firstLines.length === 0) {
+        console.log("メモの登録はありません");
+        return;
+      }
       for (const value of firstLines) {
         console.log(value);
       }
@@ -62,6 +66,10 @@ export class MemoProcessing {
       const processingMemoElements = await this.#generateProcessingMemoElements(
         this.options
       );
+      if (processingMemoElements.length === 0) {
+        console.log("メモの登録はありません");
+        return;
+      }
       let questions = new QuestionsBuilder(
         processingMemoElements,
         this.options
