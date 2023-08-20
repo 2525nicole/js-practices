@@ -15,7 +15,7 @@ class MemoApp {
       if (Object.keys(options).length > validOptionsCount) {
         console.log("一度で指定可能なオプションは一つです。");
       } else if (options.l) {
-        memo_processing.displayFirsLine();
+        memo_processing.displayFirstLines();
       } else if (options.r || options.d) {
         memo_processing.displayOrDeleteMemos();
       } else if (Object.keys(options).length === validOptionsCount) {

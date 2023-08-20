@@ -44,7 +44,7 @@ export class MemoProcessing {
     }
   }
 
-  async displayFirsLine() {
+  async displayFirstLines() {
     try {
       const firstLines = await this.#generateProcessingMemoElements(
         this.options
