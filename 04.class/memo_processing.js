@@ -3,7 +3,10 @@ import crypto from "node:crypto";
 import enquirer from "enquirer";
 const { prompt } = enquirer;
 import { FileOperation } from "./file_operation.js";
-import { QuestionsBuilder } from "./questions_builder.js";
+import {
+  QuestionsForShowBuilder,
+  QuestionsForDeleteBuilder,
+} from "./questions_builder.js";
 
 export class MemoProcessing {
   constructor(destinationFile, options) {
@@ -45,79 +48,97 @@ export class MemoProcessing {
   }
 
   async displayFirstLines() {
+    const processingMemoElements = [];
     try {
-      const firstLines = await this.#generateProcessingMemoElements(
-        this.options
-      );
-      if (firstLines.length === 0) {
+      const allMemos = await this.#readAllMemos();
+      await allMemos.memos.forEach(async (value) => {
+        const firstLine = await this.#generateFirstLine(value);
+        processingMemoElements.push(firstLine);
+      });
+
+      if (processingMemoElements.length === 0) {
         console.log("メモの登録はありません");
         return;
-      }
-      for (const value of firstLines) {
-        console.log(value);
+      } else {
+        for (const value of processingMemoElements) {
+          console.log(value);
+        }
       }
     } catch (error) {
       console.log(error);
     }
   }
 
-  async displayOrDeleteMemos() {
+  async displayMemos() {
     try {
-      const processingMemoElements = await this.#generateProcessingMemoElements(
-        this.options
-      );
+      const processingMemoElements = [];
+      const allMemos = await this.#readAllMemos();
+      await allMemos.memos.forEach(async (value) => {
+        const firstLine = await this.#generateFirstLine(value);
+        const obj = {
+          name: firstLine,
+          value: value.content,
+        };
+        processingMemoElements.push(obj);
+      });
+
       if (processingMemoElements.length === 0) {
         console.log("メモの登録はありません");
         return;
       }
-      let questions = new QuestionsBuilder(
-        processingMemoElements,
-        this.options
-      );
+      let questions = new QuestionsForShowBuilder(processingMemoElements);
       questions = await questions.buildQuestions();
       const answer = await prompt(questions);
-      if (this.options.r) {
-        console.log(answer.memo);
-      } else if (this.options.d) {
-        this.#deleteMemo(answer.memo);
-      }
+      console.log(answer.memo);
     } catch (error) {
       console.log(error);
     }
   }
 
-  async #generateProcessingMemoElements(options) {
+  async deleteMemo() {
     try {
       const processingMemoElements = [];
       const allMemos = await this.#readAllMemos();
-      allMemos.memos.forEach(function (value) {
-        const firstLine =
-          value.content.substring(0, value.content.indexOf("\n")) ||
-          value.content;
-        if (options.l) {
-          processingMemoElements.push(firstLine);
-        } else if (options.r) {
-          const obj = {
-            name: firstLine,
-            value: value.content,
-          };
-          processingMemoElements.push(obj);
-        } else if (options.d) {
-          const obj = {
-            name: value.content,
-            message: firstLine,
-            value: value.id,
-          };
-          processingMemoElements.push(obj);
-        }
+      await allMemos.memos.forEach(async (value) => {
+        const firstLine = await this.#generateFirstLine(value);
+        const obj = {
+          name: value.content,
+          message: firstLine,
+          value: value.id,
+        };
+        processingMemoElements.push(obj);
       });
-      return processingMemoElements;
+
+      if (processingMemoElements.length === 0) {
+        console.log("メモの登録はありません");
+        return;
+      }
+      let questions = new QuestionsForDeleteBuilder(processingMemoElements);
+      questions = await questions.buildQuestions();
+      const answer = await prompt(questions);
+      this.#executeDeletion(answer.memo);
     } catch (error) {
       console.log(error);
     }
   }
 
-  async #deleteMemo(deleteTarget) {
+  async #readAllMemos() {
+    try {
+      const file = new FileOperation(this.destinationFile);
+      const allMemos = await file.read();
+      return allMemos;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async #generateFirstLine(memo) {
+    const firstLine =
+      memo.content.substring(0, memo.content.indexOf("\n")) || memo.content;
+    return firstLine;
+  }
+
+  async #executeDeletion(deleteTarget) {
     const file = new FileOperation(this.destinationFile);
     try {
       const allMemos = await this.#readAllMemos();
@@ -129,16 +150,6 @@ export class MemoProcessing {
       file.writeTarget = obj;
       file.write();
       console.log("メモを削除しました。");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async #readAllMemos() {
-    try {
-      const file = new FileOperation(this.destinationFile);
-      const allMemos = await file.read();
-      return allMemos;
     } catch (error) {
       console.log(error);
     }

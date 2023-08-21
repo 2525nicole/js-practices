@@ -1,44 +1,66 @@
-export class QuestionsBuilder {
-  constructor(memoElement, options) {
+class QuestionsBuilder {
+  constructor(memoElement) {
     this.memoElement = memoElement;
-    this.options = options;
+    this.questions = [
+      {
+        type: "select",
+        name: "memo",
+        choices: this.memoElement,
+        message: "",
+        footer() {},
+        result() {},
+      },
+    ];
   }
 
   async buildQuestions() {
     try {
-      const options = this.options;
-      const message = await this.#determineMessage(this.options);
-      const questions = [
-        {
-          type: "select",
-          name: "memo",
-          message: message,
-          choices: this.memoElement,
-          footer() {
-            if (options.r) {
-              return "\n" + this.focused.value;
-            } else if (options.d) {
-              return "\n" + this.focused.name;
-            }
-          },
-          result() {
-            return this.focused.value;
-          },
-        },
-      ];
+      const questions = this.questions;
       return questions;
     } catch (error) {
       console.log(error);
     }
   }
+}
 
-  async #determineMessage(options) {
+export class QuestionsForShowBuilder extends QuestionsBuilder {
+  constructor(questions) {
+    super(questions);
+  }
+
+  async buildQuestions() {
     try {
-      if (options.r) {
-        return "Choose a note youwant to see:";
-      } else if (options.d) {
-        return "Choose a note you want to delete:";
-      }
+      this.questions[0].message = "Choose a note you want to see:";
+      this.questions[0].footer = function () {
+        return "\n" + this.focused.value;
+      };
+      this.questions[0].result = function () {
+        return this.focused.value;
+      };
+      const questions = this.questions;
+      return questions;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+export class QuestionsForDeleteBuilder extends QuestionsBuilder {
+  constructor(questions) {
+    super(questions);
+  }
+
+  async buildQuestions() {
+    try {
+      this.questions[0].message = "Choose a note you want to delete:";
+      this.questions[0].footer = function () {
+        return "\n" + this.focused.name;
+      };
+      this.questions[0].result = function () {
+        return this.focused.value;
+      };
+      const questions = this.questions;
+      return questions;
     } catch (error) {
       console.log(error);
     }
