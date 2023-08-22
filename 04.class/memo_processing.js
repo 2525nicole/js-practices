@@ -4,9 +4,9 @@ import enquirer from "enquirer";
 const { prompt } = enquirer;
 import { FileOperation } from "./file_operation.js";
 import {
-  QuestionsForShowBuilder,
-  QuestionsForDeleteBuilder,
-} from "./questions_builder.js";
+  QuestionForShowBuilder,
+  QuestionForDeleteBuilder,
+} from "./question_builder.js";
 
 export class MemoProcessing {
   constructor(destinationFile, options) {
@@ -71,24 +71,22 @@ export class MemoProcessing {
 
   async displayMemos() {
     try {
-      const processingMemoElements = [];
+      const choices = [];
       const allMemos = await this.#readAllMemos();
+      let question = new QuestionForShowBuilder(allMemos.memos);
       await allMemos.memos.forEach(async (value) => {
         const firstLine = await this.#generateFirstLine(value);
-        const obj = {
-          name: firstLine,
-          value: value.content,
-        };
-        processingMemoElements.push(obj);
+        let choice = await question.buildChoice(value, firstLine);
+        choices.push(choice);
+        return choices;
       });
 
-      if (processingMemoElements.length === 0) {
+      if (allMemos.memos.length === 0) {
         console.log("メモの登録はありません");
         return;
       }
-      let questions = new QuestionsForShowBuilder(processingMemoElements);
-      questions = await questions.buildQuestions();
-      const answer = await prompt(questions);
+      question = await question.buildQuestion(choices);
+      const answer = await prompt(question);
       console.log(answer.memo);
     } catch (error) {
       console.log(error);
@@ -97,25 +95,23 @@ export class MemoProcessing {
 
   async deleteMemo() {
     try {
-      const processingMemoElements = [];
+      const choices = [];
       const allMemos = await this.#readAllMemos();
+      let question = new QuestionForDeleteBuilder(allMemos.memos);
+
       await allMemos.memos.forEach(async (value) => {
         const firstLine = await this.#generateFirstLine(value);
-        const obj = {
-          name: value.content,
-          message: firstLine,
-          value: value.id,
-        };
-        processingMemoElements.push(obj);
+        let choice = await question.buildChoice(value, firstLine);
+        choices.push(choice);
+        return choices;
       });
 
-      if (processingMemoElements.length === 0) {
+      if (allMemos.memos.length === 0) {
         console.log("メモの登録はありません");
         return;
       }
-      let questions = new QuestionsForDeleteBuilder(processingMemoElements);
-      questions = await questions.buildQuestions();
-      const answer = await prompt(questions);
+      question = await question.buildQuestion(choices);
+      const answer = await prompt(question);
       this.#executeDeletion(answer.memo);
     } catch (error) {
       console.log(error);
