@@ -13,12 +13,7 @@ class QuestionBuilder {
   }
 
   async buildQuestion() {
-    try {
-      const question = this.question;
-      return question;
-    } catch (error) {
-      console.log(error);
-    }
+    throw new Error("Implement me");
   }
 }
 
