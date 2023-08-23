@@ -6,16 +6,11 @@ export class FileOperation {
     this.destinationFile = destinationFile;
   }
 
-  set writeTarget(content) {
-    this._writeTarget = content;
-  }
-
   async checkExistence() {
     try {
       await access(this.destinationFile, constants.F_OK);
     } catch (error) {
-      this._writeTarget = { memos: [] };
-      await this.write();
+      await this.write({ memos: [] });
     }
   }
 
@@ -30,10 +25,10 @@ export class FileOperation {
     }
   }
 
-  async write() {
+  async write(writeTarget) {
     try {
-      this._writeTarget = JSON.stringify(this._writeTarget);
-      await fs.writeFile(this.destinationFile, this._writeTarget, "utf8");
+      writeTarget = JSON.stringify(writeTarget);
+      await fs.writeFile(this.destinationFile, writeTarget);
     } catch (error) {
       console.log(error);
     }
