@@ -40,8 +40,6 @@ export class MemoProcessing {
     try {
       const allMemos = await this.#readAllMemos();
       allMemos.memos.push(newMemoObj);
-      // file.writeTarget = allMemos;
-      // file.write();
       file.write(allMemos);
     } catch (error) {
       console.log(error);
@@ -144,8 +142,6 @@ export class MemoProcessing {
       });
       const obj = { memos: [] };
       obj.memos = afterDeleteMemos;
-      // file.writeTarget = obj;
-      // file.write();
       file.write(obj);
       console.log("メモを削除しました。");
     } catch (error) {
